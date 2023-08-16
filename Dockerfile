@@ -22,7 +22,7 @@ RUN git clone https://github.com/Mikubill/sd-webui-controlnet extensions/sd-webu
 RUN git clone https://huggingface.co/kohya-ss/ControlNet-diff-modules
 RUN mv ControlNet-diff-modules/*.safetensors extensions/sd-webui-controlnet/models
 RUN wget -P models/Stable-diffusion/model.safetensors https://civitai.com/api/download/models/128713
-RUN wget -0 https://civitai.com/api/download/models/128713
+RUN wget -O /model.safetensors https://civitai.com/api/download/models/128713
 #Download Lora
 RUN wget -P models/Lora/add_detail.safetensors https://civitai.com/api/download/models/62833
 RUN wget -P models/Lora/ArmorSuit_v1.safetensors https://civitai.com/api/download/models/63688
