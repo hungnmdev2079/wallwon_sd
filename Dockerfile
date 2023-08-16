@@ -1,13 +1,12 @@
 # FROM nvidia/cuda:11.7.1-runtime-ubuntu22.04
 FROM pytorch/pytorch:1.11.0-cuda11.3-cudnn8-runtime
 
-ARG MODEL_URL='https://huggingface.co/runwayml/stable-diffusion-v1-5/blob/main/v1-5-pruned-emaonly.ckpt'
 
-ARG HF_TOKEN=''
 
 RUN apt update && DEBIAN_FRONTEND=noninteractive TZ=Etc/UTC apt-get -y install git wget \
     python3.10 python3-pip \
-    build-essential libgl-dev libglib2.0-0 vim
+    build-essential libgl-dev libglib2.0-0 vim \
+    git-lfs
 RUN ln -s /usr/bin/python3.10 /usr/bin/python
 
 ADD requirements.txt requirements.txt
