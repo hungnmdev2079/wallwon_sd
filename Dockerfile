@@ -65,11 +65,11 @@ ADD prepare.py .
 
 RUN python prepare.py --skip-torch-cuda-test --xformers --reinstall-torch --reinstall-xformers
 
-RUN pip install MarkupSafe==2.0.0 torchmetrics==0.11.4 triton
+RUN pip install MarkupSafe==2.1.1 torchmetrics==0.11.4 triton
 
-ADD download.py download.py
+#ADD download.py download.py
 
-RUN python download.py --use-cpu=all
+#RUN python download.py --use-cpu=all
 
 ADD app.py app.py
 
