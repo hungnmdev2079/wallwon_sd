@@ -1,17 +1,8 @@
-# FROM nvidia/cuda:11.7.1-runtime-ubuntu22.04
-FROM pytorch/pytorch:1.11.0-cuda11.3-cudnn8-runtime
-
-# To use a different model, change the model URL below:
-ARG MODEL_URL='https://huggingface.co/Lykon/DreamShaper/resolve/main/DreamShaper_8_pruned.safetensors'
-
-# If you are using a private Huggingface model (sign in required to download) insert your Huggingface
-# access token (https://huggingface.co/settings/tokens) below:
-ARG HF_TOKEN='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'
-
+FROM nvidia/cuda:11.7.1-runtime-ubuntu22.04
+# FROM pytorch/pytorch:1.11.0-cuda11.3-cudnn8-runtime
 RUN apt update && apt-get -y install git wget \
     python3.10 python3.10-venv python3-pip \
-    build-essential libgl-dev libglib2.0-0 vim \
-    git-lfs
+    build-essential libgl-dev libglib2.0-0 vim
 RUN ln -s /usr/bin/python3.10 /usr/bin/python
 
 RUN useradd -ms /bin/bash banana
@@ -22,13 +13,8 @@ RUN git clone https://github.com/AUTOMATIC1111/stable-diffusion-webui.git && \
     git checkout 3e0f9a75438fa815429b5530261bcf7d80f3f101
 WORKDIR /app/stable-diffusion-webui
 
-ENV MODEL_URL=${MODEL_URL}
-ENV HF_TOKEN=${HF_TOKEN}
-
-RUN pip install tqdm requests
-ADD download_checkpoint.py .
-RUN python download_checkpoint.py
-
+RUN wget -O models/Stable-diffusion/model.safetensors 'https://huggingface.co/Lykon/DreamShaper/resolve/main/DreamShaper_8_pruned.safetensors'
+RUN echo 2
 ADD prepare.py .
 RUN python prepare.py --skip-torch-cuda-test --xformers --reinstall-torch --reinstall-xformers
 
