@@ -1,34 +1,30 @@
 # FROM nvidia/cuda:11.7.1-runtime-ubuntu22.04
 FROM pytorch/pytorch:1.11.0-cuda11.3-cudnn8-runtime
-RUN apt update && apt-get update && apt-get -y install git wget \
-    python3.10 python3.10-venv python3-pip \
+
+ARG MODEL_URL='https://huggingface.co/runwayml/stable-diffusion-v1-5/blob/main/v1-5-pruned-emaonly.ckpt'
+
+ARG HF_TOKEN=''
+
+RUN apt update && DEBIAN_FRONTEND=noninteractive TZ=Etc/UTC apt-get -y install git wget \
+    python3.10 python3-pip \
     build-essential libgl-dev libglib2.0-0 vim
 RUN ln -s /usr/bin/python3.10 /usr/bin/python
 
-RUN useradd -ms /bin/bash banana
+ADD requirements.txt requirements.txt
+
+RUN pip install -r requirements.txt
+
 WORKDIR /app
 
-RUN git clone https://github.com/AUTOMATIC1111/stable-diffusion-webui.git && \
-    cd stable-diffusion-webui && \
-    git checkout 3e0f9a75438fa815429b5530261bcf7d80f3f101
+RUN git clone https://github.com/AUTOMATIC1111/stable-diffusion-webui.git stable-diffusion-webui && cd webui && git checkout 3e0f9a75438fa815429b5530261bcf7d80f3f101
+
 WORKDIR /app/stable-diffusion-webui
 
-RUN wget -O models/Stable-diffusion/model.safetensors 'https://huggingface.co/Lykon/DreamShaper/resolve/main/DreamShaper_8_pruned.safetensors'
-RUN echo 2
-ADD prepare.py .
-RUN python prepare.py --skip-torch-cuda-test --xformers --reinstall-torch --reinstall-xformers
-
-ADD download.py download.py
-RUN python download.py --use-cpu=all
-
-RUN pip install dill
-
-RUN mkdir -p extensions/banana/scripts
-ADD script.py extensions/banana/scripts/banana.py
 RUN git lfs install
 RUN git clone https://github.com/Mikubill/sd-webui-controlnet extensions/sd-webui-controlnet
 RUN git clone https://huggingface.co/kohya-ss/ControlNet-diff-modules
 RUN mv ControlNet-diff-modules/*.safetensors extensions/sd-webui-controlnet/models
+RUN wget -P models/Stable-diffusion/model.safetensors https://civitai.com/api/download/models/128713
 
 #Download Lora
 RUN wget -P models/Lora/add_detail.safetensors https://civitai.com/api/download/models/62833

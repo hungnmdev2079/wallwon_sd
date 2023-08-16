@@ -1,3 +1,5 @@
-potassium
-transformers
-diffusers[torch]
+Potassium
+requests
+fastapi
+pydantic==1.10.4
+tqdm
