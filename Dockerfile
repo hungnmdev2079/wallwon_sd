@@ -16,7 +16,7 @@ RUN pip install -r requirements.txt
 
 WORKDIR /app
 
-RUN git clone https://github.com/AUTOMATIC1111/stable-diffusion-webui.git stable-diffusion-webui && cd webui && git checkout 3e0f9a75438fa815429b5530261bcf7d80f3f101
+RUN git clone https://github.com/AUTOMATIC1111/stable-diffusion-webui.git stable-diffusion-webui && cd stable-diffusion-webui && git checkout 3e0f9a75438fa815429b5530261bcf7d80f3f101
 
 WORKDIR /app/stable-diffusion-webui
 
