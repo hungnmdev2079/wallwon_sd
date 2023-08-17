@@ -1,6 +1,8 @@
 # FROM nvidia/cuda:11.7.1-runtime-ubuntu22.04
 FROM pytorch/pytorch:1.11.0-cuda11.3-cudnn8-runtime
+ARG MODEL_URL='https://huggingface.co/Lykon/DreamShaper/resolve/main/DreamShaper_8_pruned.safetensors'
 
+ARG HF_TOKEN='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'
 RUN apt update && DEBIAN_FRONTEND=noninteractive TZ=Etc/UTC apt-get -y install git wget \
     python3.10 python3-pip \
     build-essential libgl-dev libglib2.0-0 vim \
@@ -59,17 +61,25 @@ RUN wget -P embeddings/bad_artist.pt https://civitai.com/api/download/models/605
 RUN wget -P embeddings/badhandv4.pt https://civitai.com/api/download/models/20068
 RUN wget -P embeddings/negative_hand-neg.pt https://civitai.com/api/download/models/60938
 
+ENV MODEL_URL=${MODEL_URL}
+ENV HF_TOKEN=${HF_TOKEN}
+
 RUN pip install tqdm requests 
 
 ADD prepare.py .
 
 RUN python prepare.py --skip-torch-cuda-test --xformers --reinstall-torch --reinstall-xformers
 
-RUN pip install MarkupSafe==2.1.1 torchmetrics==0.11.4 triton
+ADD download_checkpoint.py .
 
-#ADD download.py download.py
+RUN python download_checkpoint.py
 
-#RUN python download.py --use-cpu=all
+RUN pip install MarkupSafe==2.0.0 torchmetrics==0.11.4 triton
+
+
+ADD download.py download.py
+
+RUN python download.py --use-cpu=all
 
 ADD app.py app.py
 
