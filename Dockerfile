@@ -34,7 +34,7 @@ ADD download_checkpoint.py .
 RUN python download_checkpoint.py
 
 RUN pip install MarkupSafe==2.1.1 torchmetrics==0.11.4 triton
-RUN pip install torch==2.0.0+cu118 torchvision==0.14.1+cu117 torchtext==0.14.1 torchaudio==0.13.1 torchdata==0.5.1 --extra-index-url https://download.pytorch.org/whl/cu117
+RUN pip install torch==2.0.0+cu118 torchvision==0.14.1+cu117 torchtext==0.14.1 torchaudio==0.13.1 torchdata==0.5.1 --extra-index-url https://download.pytorch.org/whl/cu118
 
 
 ADD download.py download.py
