@@ -9,9 +9,9 @@ RUN apt update && DEBIAN_FRONTEND=noninteractive TZ=Etc/UTC apt-get -y install g
     git-lfs
 RUN ln -s /usr/bin/python3.10 /usr/bin/python
 
-# ADD requirements.txt requirements.txt
+ADD requirements.txt requirements.txt
 
-# RUN pip install -r requirements.txt
+RUN pip install -r requirements.txt
 RUN useradd -ms /bin/bash banana
 
 WORKDIR /app
