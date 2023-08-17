@@ -9,15 +9,34 @@ RUN apt update && DEBIAN_FRONTEND=noninteractive TZ=Etc/UTC apt-get -y install g
     git-lfs
 RUN ln -s /usr/bin/python3.10 /usr/bin/python
 
-ADD requirements.txt requirements.txt
+# ADD requirements.txt requirements.txt
 
-RUN pip install -r requirements.txt
+# RUN pip install -r requirements.txt
+RUN useradd -ms /bin/bash banana
 
 WORKDIR /app
 
 RUN git clone https://github.com/MHunga/stable-diffusion-webui.git && cd stable-diffusion-webui
 
 WORKDIR /app/stable-diffusion-webui
+
+ENV MODEL_URL=${MODEL_URL}
+ENV HF_TOKEN=${HF_TOKEN}
+
+RUN pip install tqdm requests
+ADD download_checkpoint.py .
+RUN python download_checkpoint.py
+
+ADD prepare.py .
+RUN python prepare.py --skip-torch-cuda-test --xformers --reinstall-torch --reinstall-xformers
+
+ADD download.py download.py
+RUN python download.py --use-cpu=all
+
+RUN pip install dill
+
+RUN mkdir -p extensions/banana/scripts
+ADD script.py extensions/banana/scripts/banana.py
 
 RUN git lfs install
 RUN git clone https://github.com/Mikubill/sd-webui-controlnet extensions/sd-webui-controlnet
@@ -59,26 +78,27 @@ RUN wget -P embeddings/bad_artist.pt https://civitai.com/api/download/models/605
 RUN wget -P embeddings/badhandv4.pt https://civitai.com/api/download/models/20068
 RUN wget -P embeddings/negative_hand-neg.pt https://civitai.com/api/download/models/60938
 
-ENV MODEL_URL=${MODEL_URL}
-ENV HF_TOKEN=${HF_TOKEN}
+# ENV MODEL_URL=${MODEL_URL}
+# ENV HF_TOKEN=${HF_TOKEN}
 
-RUN pip install tqdm requests 
+# RUN pip install tqdm requests 
 
-ADD prepare.py .
+# ADD prepare.py .
 
-RUN python prepare.py --skip-torch-cuda-test --xformers --reinstall-torch --reinstall-xformers
+# RUN python prepare.py --skip-torch-cuda-test --xformers --reinstall-torch --reinstall-xformers
 
-ADD download_checkpoint.py .
+# ADD download_checkpoint.py .
 
-RUN python download_checkpoint.py
+# RUN python download_checkpoint.py
 
-RUN pip install MarkupSafe==2.0.0 torchmetrics==0.11.4 triton
+# RUN pip install MarkupSafe==2.0.0 torchmetrics==0.11.4 triton
 
 
-ADD download.py download.py
+# ADD download.py download.py
 
-RUN python download.py --use-cpu=all
+# RUN python download.py --use-cpu=all
 
 ADD app.py app.py
+ADD server.py server.py
 
-CMD python app.py
+CMD ["python", "server.py", "--xformers", "--disable-safe-unpickle", "--lowram", "--no-hashing", "--listen", "--port", "8000"]

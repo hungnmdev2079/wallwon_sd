@@ -84,7 +84,7 @@ async def inference(request: Request):
 
 def register_endpoints(block, app):
     global client
-    app.add_api_route('/healthcheck', healthcheck, methods=['GET'])
+    # app.add_api_route('/healthcheck', healthcheck, methods=['GET'])
     app.add_api_route('/', inference, methods=['POST'])
     client = TestClient(app)
 
