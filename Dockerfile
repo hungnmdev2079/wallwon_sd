@@ -50,10 +50,10 @@ RUN pip install dill
 RUN mkdir -p extensions/banana/scripts
 ADD script.py extensions/banana/scripts/banana.py
 
-RUN git lfs install
-RUN git clone https://github.com/Mikubill/sd-webui-controlnet extensions/sd-webui-controlnet
-RUN git clone https://huggingface.co/kohya-ss/ControlNet-diff-modules
-RUN mv ControlNet-diff-modules/*.safetensors extensions/sd-webui-controlnet/models
+# RUN git lfs install
+# RUN git clone https://github.com/Mikubill/sd-webui-controlnet extensions/sd-webui-controlnet
+# RUN git clone https://huggingface.co/kohya-ss/ControlNet-diff-modules
+# RUN mv ControlNet-diff-modules/*.safetensors extensions/sd-webui-controlnet/models
 #Download Lora
 RUN wget -P models/Lora/add_detail.safetensors https://civitai.com/api/download/models/62833
 RUN wget -P models/Lora/ArmorSuit_v1.safetensors https://civitai.com/api/download/models/63688
