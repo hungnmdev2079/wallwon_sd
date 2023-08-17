@@ -23,14 +23,21 @@ WORKDIR /app/stable-diffusion-webui
 ENV MODEL_URL=${MODEL_URL}
 ENV HF_TOKEN=${HF_TOKEN}
 
-RUN pip install tqdm requests
-ADD download_checkpoint.py .
-RUN python download_checkpoint.py
+RUN pip install tqdm requests 
 
 ADD prepare.py .
+
 RUN python prepare.py --skip-torch-cuda-test --xformers --reinstall-torch --reinstall-xformers
 
+ADD download_checkpoint.py .
+
+RUN python download_checkpoint.py
+
+RUN pip install MarkupSafe==2.1.1 torchmetrics==0.11.4 triton
+
+
 ADD download.py download.py
+
 RUN python download.py --use-cpu=all
 
 RUN pip install dill
